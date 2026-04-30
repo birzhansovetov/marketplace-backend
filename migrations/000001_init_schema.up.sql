@@ -3,7 +3,10 @@ CREATE TABLE users (
     name TEXT,
     email TEXT UNIQUE,
     phone TEXT,
-    password TEXT
+    password TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP NULL
 );
 
 CREATE TABLE items (
@@ -12,5 +15,7 @@ CREATE TABLE items (
     description TEXT,
     price DOUBLE PRECISION,
     status TEXT,
-    seller_id INT REFERENCES users(id)
+    seller_id INT REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
 );

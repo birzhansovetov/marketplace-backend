@@ -14,6 +14,7 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	userHandler := handlers.NewUserHandler(db)
 	itemHandler := handlers.NewItemHandler(db)
 	authHandler := handlers.NewAuthHandler(db)
+	orderHandler := handlers.NewOrderHandler(db)
 
 	api.POST("/users", userHandler.CreateUser)
 	api.GET("/users", userHandler.GetUsers)
@@ -29,5 +30,14 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	api.POST("/auth/register", authHandler.Register)
 	api.POST("/auth/login", authHandler.Login)
 
-	api.POST("/items", middleware.AuthMiddleware(), itemHandler.CreateItem)
+	auth := api.Group("/", middleware.AuthMiddleware())
+	{
+		auth.POST("/items", itemHandler.CreateItem)
+
+		auth.POST("/orders", orderHandler.CreateOrder)
+		auth.GET("/orders", orderHandler.GetOrders)
+		auth.GET("/orders/:id", orderHandler.GetOrderByID)
+		auth.PATCH("/orders/:id/status", orderHandler.UpdateOrderStatus)
+		auth.DELETE("/orders/:id", orderHandler.DeleteOrder)
+	}
 }
